@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>日历</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        #schedule-box{
+            width: 320px;
+            margin: 0 auto;
+            padding: 35px 20px;
+            font-size: 13px;
+        }
+        .schedule-hd{
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+        .today{
+            flex: 1;
+            text-align: center;
+        }
+        .ul-box{
+            overflow: hidden;
+        }
+        .ul-box > li{
+            float: left;
+            width: 14.28%;
+            text-align: center;
+            padding: 5px 0;
+        }
+        .other-month{
+            color: #999999;
+        }
+        .current-month{
+            color: #333333;
+        }
+        .today-style{
+            border-radius: 50%;
+            background: #58d321;
+        }
+        .arrow{
+            cursor: pointer;
+        }
+        .dayStyle{
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            cursor: pointer;
+        }
+        .current-month > .dayStyle:hover{
+            background: #00BDFF;
+            color: #ffffff;
+        }
+        .today-flag{
+            background: #00C2B1;
+            color: #fff;
+        }
+        .boxshaw{
+            box-shadow: 2px 2px 15px 2px #e3e3e3;
+        }
+        .selected-style {
+            background: #00BDFF;
+            color: #ffffff;
+        }
+        #h3Ele{
+            text-align: center;
+            padding: 10px;
+        }
+        @font-face {font-family: "iconfont";
+  src: url('//at.alicdn.com/t/font_234130_nem7eskcrkpdgqfr.eot?t=1505291076294'); /* IE9*/
+  src: url('//at.alicdn.com/t/font_234130_nem7eskcrkpdgqfr.eot?t=1505291076294#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff'),
+  url('//at.alicdn.com/t/font_234130_nem7eskcrkpdgqfr.ttf?t=1505291076294') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/font_234130_nem7eskcrkpdgqfr.svg?t=1505291076294#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfonts {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-115rightarrowheads:before { content: "\e79b"; }
+
+.icon-111arrowheadright:before { content: "\e6db"; }
+
+.icon-116leftarrowheads:before { content: "\e807"; }
+
+.icon-112leftarrowhead:before { content: "\e6f6"; }
+    </style>
+</head>
+<body>
+    <div id='schedule-box' class="boxshaw"></div>
+</body>
+<script type="text/javascript">
+    //日历
+        //日期格式化
+        window.year = new Date().getFullYear();
+        window.month = new Date().getMonth();
+        window.selectedDate = '';
+        window.day = new Date().getDate();
+        function formartDate (y,m,d,symbol) {
+            symbol = symbol || '-';
+            m = (m.toString())[1] ? m : '0'+m;
+            d = (d.toString())[1] ? d : '0'+d;
+            return y+symbol+m+symbol+d
+        };
+        function formartmonth (y,m,symbol) {
+            symbol = symbol || '-';
+            m = (m.toString())[1] ? m : '0'+m;
+            return y+symbol+m
+        };
+        //初始化日历
+        function Schedule(e,optdate) {
+            var def = {},
+                curDate = new Date(),
+    
+                currentYear = curDate.getFullYear(),
+                currentMonth = curDate.getMonth(),
+                currentDay = curDate.getDate(),
+                
+                el = document.querySelector(e) || document.querySelector('body'),
+                _this = this;
+            if(optdate.length) {
+                for(var i = 0;i<optdate.length;i++) {
+                    optdate[i] = new Date(optdate[i]);
+                    
+                }
+            }else {
+                optdate = [];
+            }
+
+            var init = function () {
+                var scheduleHd = '<div class="schedule-hd">'+
+                                    '<div>'+
+                                        // '<span class="arrow icon iconfont icon-116leftarrowheads" id="prevYear" ></span>'+
+                                        '<span class="arrow icon iconfonts icon-112leftarrowhead" id="prevMonth"></span>'+
+                                    '</div>'+
+                                    '<div class="today">'+formartmonth(year,month+1,'-')+'</div>'+
+                                    '<div>'+
+                                        '<span class="arrow icon iconfonts icon-111arrowheadright" id="nextMonth"></span>'+
+                                        // '<span class="arrow icon iconfont icon-115rightarrowheads" id="nextYear"></span>'+
+                                    '</div>'+
+                                '</div>'
+                var scheduleWeek = '<ul class="week-ul ul-box">'+
+                                        '<li>日</li>'+
+                                        '<li>一</li>'+
+                                        '<li>二</li>'+
+                                        '<li>三</li>'+
+                                        '<li>四</li>'+
+                                        '<li>五</li>'+
+                                        '<li>六</li>'+
+                                    '</ul>'
+                var scheduleBd = '<ul class="schedule-bd ul-box" ></ul>'; 
+                el.innerHTML = scheduleHd + scheduleWeek + scheduleBd;
+                render();
+            }
+            var render = function () {
+                var fullDay = new Date(year,month+1,0).getDate(), //当月总天数
+                    startWeek = new Date(year,month,1).getDay(), //当月第一天是周几
+                    total = (fullDay+startWeek)%7 == 0 ? (fullDay+startWeek) : fullDay+startWeek+(7-(fullDay+startWeek)%7),//元素总个数
+                    lastMonthDay = new Date(year,month,0).getDate(), //上月最后一天
+                    eleTemp = [];
+                for(var i = 0; i < total; i++){
+                    if(i<startWeek){
+                        eleTemp.push('<li class="other-month"><span class="dayStyle">'+(lastMonthDay-startWeek+1+i)+'</span></li>')
+                    }else if(i<(startWeek+fullDay)){
+                        var nowDate = formartDate(year,month+1,(i+1-startWeek),'-');
+                        
+                        var addClass = '';
+                        for(var j = 0;j<optdate.length;j++) {
+                            var kyear = optdate[j].getFullYear(),
+                                kmonth = optdate[j].getMonth(),
+                                kday = optdate[j].getDate();
+                             var keyday = formartDate(kyear,kmonth+1,kday,'-');
+                            if(nowDate == keyday) {
+                                addClass = 'huiyi-flag';
+                            }
+
+                        }
+
+                        selectedDate == nowDate && (addClass = 'selected-style');
+                        formartDate(currentYear,currentMonth+1,currentDay,'-') == nowDate && (addClass = 'today-flag');
+                        eleTemp.push('<li class="current-month" ><span title='+nowDate+' class="currentDate dayStyle '+addClass+'">'+(i+1-startWeek)+'</span></li>')
+                    }else{
+
+                        eleTemp.push('<li class="other-month"><span class="dayStyle">'+(i+1-(startWeek+fullDay))+'</span></li>')
+                    }
+                }
+                el.querySelector('.schedule-bd').innerHTML = eleTemp.join('');
+                el.querySelector('.today').innerHTML = formartmonth(year,month+1,'-');
+            };
+            init();
+            // render();
+
+        }
+        Date.prototype.format = function(format) {
+           var date = {
+                "M+": this.getMonth() + 1,
+                "d+": this.getDate(),
+                "h+": this.getHours(),
+                "m+": this.getMinutes(),
+                "s+": this.getSeconds(),
+                "q+": Math.floor((this.getMonth() + 3) / 3),
+                "S+": this.getMilliseconds()
+           };
+           if (/(y+)/i.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+           }
+           for (var k in date) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                        ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                }
+           }
+           return format;
+        }
+
+        !function () {
+            var datelist = [2018-01-03,2018-01-07,2018-01-08,2018-01-09,]
+            Schedule('#schedule-box',datelist);
+            document.querySelector("#schedule-box").addEventListener('click',function(e){
+                if(e.target.id == 'nextMonth') {
+                                    
+                    if(month+1 > 11){
+                     year += 1;
+                     month = 0;
+                     }else{
+                         month += 1;
+                     } 
+                    
+                    
+                    Schedule('#schedule-box',datelist);
+                    
+                    
+                }
+                if(e.target.id == 'prevMonth') {
+                    if(month-1 < 0){
+                        year -= 1;
+                        month = 11;
+                    }else{
+                        month -= 1;
+                    } 
+
+                    Schedule('#schedule-box',datelist);
+                }
+                if(e.target.className.indexOf('currentDate') > -1){
+                    selectedDate = e.target.title;
+                    
+                    Schedule('#schedule-box',datelist);
+
+                    
+                }
+            })
+        }();
+</script>
+</html>
